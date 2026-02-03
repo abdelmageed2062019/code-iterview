@@ -53,9 +53,6 @@ export const getUserByClerkId = query({
                .query('users')
                .withIndex('by_clerkId', (q) => q.eq('clerkId', args.clerkId))
                .first();
-          if (!user) {
-               throw new Error("User not found");
-          }
-          return user;
+          return user ?? null;
      }
 })
