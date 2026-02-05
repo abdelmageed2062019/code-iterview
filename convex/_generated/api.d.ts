@@ -10,7 +10,7 @@
 
 import type * as comments from "../comments.js";
 import type * as http from "../http.js";
-import type * as intervews from "../intervews.js";
+import type * as interviews from "../interviews.js";
 import type * as users from "../users.js";
 
 import type {
@@ -22,7 +22,7 @@ import type {
 declare const fullApi: ApiFromModules<{
   comments: typeof comments;
   http: typeof http;
-  intervews: typeof intervews;
+  interviews: typeof interviews;
   users: typeof users;
 }>;
 
