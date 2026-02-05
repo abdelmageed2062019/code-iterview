@@ -5,6 +5,7 @@ import ConvexClerkProvider from "@/providers/ConvexClerkProvider";
 import Navbar from "@/components/Navbar";
 import { ThemeProvider } from "@/providers/ThemeProvider";
 import AuthGate from "@/components/AuthGate";
+import { Toaster } from "@/components/ui/sonner"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -39,6 +40,7 @@ export default function RootLayout({
                 <main className="px-4 sm:px-6 lg:px-8">
                   {children}
                 </main>
+                <Toaster />
               </div>
             </AuthGate>
           </ThemeProvider>

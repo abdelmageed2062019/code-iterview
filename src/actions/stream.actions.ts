@@ -1,12 +1,11 @@
-"user server"
+"use server"
 
-import { currentUser } from "@clerk/nextjs/server"
 import { StreamClient } from "@stream-io/node-sdk";
 
-export const streamTokenProvider = async () => {
-     const user = await currentUser();
-
-     if (!user) throw new Error("User not found");
+export const streamTokenProvider = async (userId: string) => {
+     if (!userId) {
+          throw new Error("Missing user id");
+     }
 
      const streamClient = new StreamClient(
           process.env.NEXT_PUBLIC_STREAM_API_KEY!,
@@ -14,7 +13,7 @@ export const streamTokenProvider = async () => {
      )
 
      const token = streamClient.generateUserToken({
-          user_id: user.id
+          user_id: userId
      })
 
      return token;

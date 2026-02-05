@@ -1,6 +1,6 @@
 "use client"
 
-import { Children, ReactNode, useEffect, useState } from "react"
+import { ReactNode, useEffect, useState } from "react"
 import { StreamVideo, StreamVideoClient } from "@stream-io/video-react-sdk"
 import { useUser } from "@clerk/nextjs"
 import LoadingUi from "@/components/LoadingUi"
@@ -11,15 +11,15 @@ const StreamClientProvider = ({ children }: { children: ReactNode }) => {
      const [streamClient, setStreamClient] = useState<StreamVideoClient>()
 
      useEffect(() => {
-          if (!isLoaded || !user) return;
+          if (!isLoaded || !user?.id) return;
           const client = new StreamVideoClient({
                apiKey: process.env.NEXT_PUBLIC_STREAM_API_KEY!,
                user: {
                     id: user.id,
-                    name: user?.firstName || "" + " " + user?.lastName || "",
+                    name: `${user.firstName ?? ""} ${user.lastName ?? ""}`.trim(),
                     image: user?.imageUrl || "",
                },
-               tokenProvider: streamTokenProvider,
+               tokenProvider: () => streamTokenProvider(user.id),
           })
           setStreamClient(client)
      }, [user, isLoaded])
