@@ -15,6 +15,13 @@ const MeetingPage = () => {
   const [isSetupCompleted, setIsSetupCompleted] = useState(false)
   const { call, isLoading: isCallLoading } = useGetCallById(id)
   if (!isLoaded || isCallLoading || !call) return <LoadingUi />
+   if (!call) {
+    return (
+      <div className="h-screen flex items-center justify-center">
+        <p className="text-2xl font-semibold">Meeting not found</p>
+      </div>
+    );
+  }
   return (
     <StreamCall call={call}>
       <StreamTheme>
