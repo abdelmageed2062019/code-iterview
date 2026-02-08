@@ -7,6 +7,7 @@ import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "./ui/resiz
 import { LayoutListIcon, LoaderIcon, UserIcon } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu"
 import { Button } from "./ui/button"
+import CodeEditor from "./CodeEditor"
 
 const MeetingRoom = () => {
   const router = useRouter()
@@ -25,9 +26,9 @@ const MeetingRoom = () => {
   }
 
   return (
-    <ResizablePanelGroup className="min-h-[calc(100vh-8rem)] w-full" orientation="horizontal">
-      <ResizablePanel defaultSize={25} minSize={25} className="relative h-full min-h-0 bg-card/40">
-        <div className="absolute inset-0">
+    <ResizablePanelGroup className="min-h-[calc(100vh-8rem)] w-full pt-4" orientation="horizontal">
+      <ResizablePanel defaultSize={25} minSize={25} className="relative h-full min-h-0 bg-card/40 ">
+        <div className="absolute inset-0 pt-2">
           {
             layout === "grid" ? <PaginatedGridLayout /> : <SpeakerLayout />
           }
@@ -81,9 +82,7 @@ const MeetingRoom = () => {
       <ResizableHandle withHandle />
 
       <ResizablePanel defaultSize={50} minSize={25} className="h-full min-h-0 bg-card/40">
-        <div className="h-full w-full rounded-lg border bg-muted/40 p-4">
-          <h1 className="text-sm text-muted-foreground">Code Editor will go here</h1>
-        </div>
+        <CodeEditor />
       </ResizablePanel>
     </ResizablePanelGroup>
   )
