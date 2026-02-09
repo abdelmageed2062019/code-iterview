@@ -37,6 +37,7 @@ export const getInterviewByStreamCallId = query({
 export const createInterview = mutation({
      args: {
           title: v.string(),
+          description: v.optional(v.string()),
           startTime: v.number(),
           status: v.string(),
           streamCallId: v.string(),
