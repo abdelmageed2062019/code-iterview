@@ -7,6 +7,7 @@ import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "./ui/resiz
 import { LayoutListIcon, LoaderIcon, UserIcon } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu"
 import { Button } from "./ui/button"
+import EndCallButton from "./EndCallButton"
 import CodeEditor from "./CodeEditor"
 
 const MeetingRoom = () => {
@@ -63,6 +64,8 @@ const MeetingRoom = () => {
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
+                
+                <EndCallButton />
 
                 <Button
                   variant="outline"

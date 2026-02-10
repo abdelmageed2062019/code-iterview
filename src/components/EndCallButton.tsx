@@ -28,7 +28,7 @@ const EndCallButton = () => {
 
                await updateInterviewStatus({
                     id: interview?._id,
-                    status: "ended",
+                    status: "completed",
                })
                router.push("/")
                toast.success("Meeting ended successfully")
@@ -40,7 +40,7 @@ const EndCallButton = () => {
 
      return (
           <Button variant={"destructive"} onClick={endCall}>     
-               End Call
+               End Meeting
           </Button>
      )
 }

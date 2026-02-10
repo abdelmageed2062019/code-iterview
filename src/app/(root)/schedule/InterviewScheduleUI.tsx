@@ -36,6 +36,7 @@ function InterviewScheduleUI() {
      const interviews = useQuery(api.interviews.getAllInterviews) ?? [];
      const users = useQuery(api.users.getUsers) ?? [];
      const createInterview = useMutation(api.interviews.createInterview);
+     const updateInterviewStatus = useMutation(api.interviews.updateInterviewStatus);
 
      const candidates = users?.filter((u) => u.role === "candidate");
      const interviewers = users?.filter((u) => u.role === "interviewer");
@@ -66,6 +67,26 @@ function InterviewScheduleUI() {
           });
      }, [user?.id, users]);
 
+     useEffect(() => {
+          if (!interviews.length) return;
+          const now = new Date();
+          const liveInterviews = interviews.filter((interview) => {
+               if (interview.status !== "upcoming") return false;
+               const start = new Date(interview.startTime);
+               const end = new Date(start.getTime() + 60 * 60 * 1000);
+               return now >= start && now <= end;
+          });
+          if (!liveInterviews.length) return;
+          const update = async () => {
+               await Promise.all(
+                    liveInterviews.map((interview) =>
+                         updateInterviewStatus({ id: interview._id, status: "live" })
+                    )
+               );
+          };
+          update();
+     }, [interviews, updateInterviewStatus]);
+
      const scheduleMeeting = async () => {
           if (!user) return;
           if (!formData.candidateId || formData.interviewerIds.length === 0) {
@@ -73,23 +94,23 @@ function InterviewScheduleUI() {
                return;
           }
 
-          setIsCreating(true);
-
           try {
                const { title, description, date, time, candidateId, interviewerIds } = formData;
                const [hours, minutes] = time.split(":");
                const meetingDate = new Date(date);
                meetingDate.setHours(parseInt(hours), parseInt(minutes), 0);
+               const now = new Date();
+               const nextSlot = new Date(now);
+               const nextMinutes = Math.floor(now.getMinutes() / 30) * 30 + 30;
+               nextSlot.setMinutes(nextMinutes, 0, 0);
+               if (meetingDate < nextSlot) {
+                    toast.error(`Please select a future time slot (from ${nextSlot.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })})`);
+                    return;
+               }
+
+               setIsCreating(true);
 
                const id = crypto.randomUUID();
-               await createStreamCall({
-                    callId: id,
-                    createdById: user.id,
-                    startsAt: meetingDate.toISOString(),
-                    description: title,
-                    additionalDetails: description,
-               });
-
                await createInterview({
                     title,
                     description,
@@ -114,6 +135,18 @@ function InterviewScheduleUI() {
                          return currentUser ? [currentUser._id] : [];
                     })(),
                });
+
+               try {
+                    await createStreamCall({
+                         callId: id,
+                         createdById: user.id,
+                         startsAt: meetingDate.toISOString(),
+                         description: title,
+                         additionalDetails: description,
+                    });
+               } catch (error) {
+                    toast.error("Meeting saved, but stream call creation failed");
+               }
           } catch (error) {
                console.error(error);
                toast.error("Failed to schedule meeting. Please try again.");

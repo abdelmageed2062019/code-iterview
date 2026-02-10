@@ -17,8 +17,13 @@ export const getMyInterviews = query({
           if (!identity) {
                throw new Error("Not authenticated");
           }
+          const user = await ctx.db
+               .query("users")
+               .withIndex("by_clerkId", (q) => q.eq("clerkId", identity.subject))
+               .first();
+          if (!user) return [];
           return await ctx.db.query("interviews")
-               .withIndex("by_candidateId", (q) => q.eq("candidateId", identity.subject))
+               .withIndex("by_candidateId", (q) => q.eq("candidateId", user._id))
                .collect();
      },
 });
